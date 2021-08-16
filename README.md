@@ -15,7 +15,7 @@ Note #1: PNG Optimizer add-on uses 5 different open-source optimization engines:
 You can install this app as a PWA on your mobile device, moreover, it is available as a browser extension as-well-as a web application:
 
 Chrome: https://chrome.google.com/webstore/detail/png-optimizer/mbdicaikmgcmncjomjpmmepdmnpplccc  
-Edge:   
+Edge: https://microsoftedge.microsoft.com/addons/detail/jjmbiifehcafepfabbbgdoehefleaadj   
 Firefox: https://addons.mozilla.org/en-US/firefox/addon/png-optimizer/  
 Opera: https://addons.opera.com/en/extensions/details/png-optimizer/  
 Webapp & PWA: https://webbrowsertools.com/png-optimizer/  

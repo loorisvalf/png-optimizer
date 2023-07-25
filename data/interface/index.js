@@ -1,14 +1,14 @@
 var background = (function () {
-  var tmp = {};
-  var context = document.documentElement.getAttribute("context");
+  let tmp = {};
+  let context = document.documentElement.getAttribute("context");
   if (context === "webapp") {
     return {
       "send": function () {},
       "receive": function (callback) {}
     }
   } else {
-    chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-      for (var id in tmp) {
+    chrome.runtime.onMessage.addListener(function (request) {
+      for (let id in tmp) {
         if (tmp[id] && (typeof tmp[id] === "function")) {
           if (request.path === "background-to-interface") {
             if (request.method === id) tmp[id](request.data);
@@ -19,18 +19,38 @@ var background = (function () {
     /*  */
     return {
       "receive": function (id, callback) {tmp[id] = callback},
-      "send": function (id, data) {chrome.runtime.sendMessage({"path": "interface-to-background", "method": id, "data": data})}
+      "send": function (id, data) {
+        chrome.runtime.sendMessage({
+          "method": id, 
+          "data": data,
+          "path": "interface-to-background"
+        }, function () {
+          return chrome.runtime.lastError;
+        });
+      }
     }
   }
 })();
 
 var config  = {
-  "drop": {"element": null},
-  "select": {"element": null},
-  "output": {"element": null},
-  "result": {"element": null},
-  "console": {"element": null},
-  "optimize": {"element": null},
+  "drop": {
+    "element": null
+  },
+  "select": {
+    "element": null
+  },
+  "output": {
+    "element": null
+  },
+  "result": {
+    "element": null
+  },
+  "console": {
+    "element": null
+  },
+  "optimize": {
+    "element": null
+  },
   "addon": {
     "homepage": function () {
       return chrome.runtime.getManifest().homepage_url;
@@ -44,34 +64,54 @@ var config  = {
       return s + " B";
     } else return '';
   },
+  "action": {
+    "dragover": function (e) {
+      e.preventDefault();
+    },
+    "drop": function (e) {
+      if (e.target.id !== "fileio") {
+        e.preventDefault();
+        /*  */
+        config.drop.element.files = e.dataTransfer.files;
+        config.app.clean(false, true, true);
+        config.app.optimize();
+      }
+    }
+  },
   "resize": {
     "timeout": null,
     "method": function () {
-      if (config.resize.timeout) window.clearTimeout(config.resize.timeout);
-      config.resize.timeout = window.setTimeout(function () {
-        config.storage.write("size", {
-          "width": window.innerWidth || window.outerWidth,
-          "height": window.innerHeight || window.outerHeight
-        });
-      }, 1000);
+      if (config.port.name === "win") {
+        if (config.resize.timeout) window.clearTimeout(config.resize.timeout);
+        config.resize.timeout = window.setTimeout(async function () {
+          const current = await chrome.windows.getCurrent();
+          /*  */
+          config.storage.write("interface.size", {
+            "top": current.top,
+            "left": current.left,
+            "width": current.width,
+            "height": current.height
+          });
+        }, 1000);
+      }
     }
   },
   "load": function () {
-    var reload = document.getElementById("reload");
-    var support = document.getElementById("support");
-    var donation = document.getElementById("donation");
+    const reload = document.getElementById("reload");
+    const support = document.getElementById("support");
+    const donation = document.getElementById("donation");
     /*  */
     reload.addEventListener("click", function () {
       document.location.reload();
     }, false);
     /*  */
     support.addEventListener("click", function () {
-      var url = config.addon.homepage();
+      const url = config.addon.homepage();
       chrome.tabs.create({"url": url, "active": true});
     }, false);
     /*  */
     donation.addEventListener("click", function () {
-      var url = config.addon.homepage() + "?reason=support";
+      const url = config.addon.homepage() + "?reason=support";
       chrome.tabs.create({"url": url, "active": true});
     }, false);
     /*  */
@@ -92,7 +132,7 @@ var config  = {
     "write": function (id, data) {
       if (id) {
         if (data !== '' && data !== null && data !== undefined) {
-          var tmp = {};
+          let tmp = {};
           tmp[id] = data;
           config.storage.local[id] = data;
           chrome.storage.local.set(tmp, function () {});
@@ -107,7 +147,7 @@ var config  = {
     "name": '',
     "connect": function () {
       config.port.name = "webapp";
-      var context = document.documentElement.getAttribute("context");
+      const context = document.documentElement.getAttribute("context");
       /*  */
       if (chrome.runtime) {
         if (chrome.runtime.connect) {
@@ -135,21 +175,25 @@ var config  = {
     "add": {
       "text": function (name, key, text, color) {
         if (name && key && text) {
-          var output = document.getElementById("png-optimizer-item-id-" + name);
+          let output = document.getElementById("png-optimizer-item-id-" + name);
           if (output) {
-            var target = output.querySelector(key);
+            let target = output.querySelector(key);
             if (target) {
               target.textContent = text.trim();
               if (color) target.style.color = color;
+              if (key === ".percent") {
+                const value = Number(text.trim().replace('%', ''));
+                output.setAttribute("optimized", value < 0);
+              }
             }
           }
         }
       },
       "template": function (name, size) {
-        var output = document.getElementById("png-optimizer-item-id-" + name);
+        let output = document.getElementById("png-optimizer-item-id-" + name);
         if (!output) {
-          var template = document.querySelector("template");
-          var parent = template.content.querySelector(".output");
+          let template = document.querySelector("template");
+          let parent = template.content.querySelector(".output");
           output = document.importNode(parent, true);
           output.setAttribute("id", "png-optimizer-item-id-" + name);
           output.setAttribute("name", name);
@@ -159,10 +203,10 @@ var config  = {
       },
       "download": {
         "link": function (name, blob) {
-          var output = document.getElementById("png-optimizer-item-id-" + name);
+          let output = document.getElementById("png-optimizer-item-id-" + name);
           if (output) {
-            var a = document.createElement("a");
-            var download = output.querySelector(".download");
+            let a = document.createElement("a");
+            let download = output.querySelector(".download");
             /*  */
             a.href = window.URL.createObjectURL(blob);
             a.download = name;
@@ -176,8 +220,8 @@ var config  = {
   },
   "app": {
     "clean": function (d, r, c) {
-      var index = config.select.element.selectedIndex;
-      var title = config.select.element[index].textContent || "Compressor";
+      let index = config.select.element.selectedIndex;
+      let title = config.select.element[index].textContent || "Compressor";
       /*  */
       if (d) config.drop.element.value = '';
       if (r) config.result.element.textContent = '';
@@ -190,14 +234,14 @@ var config  = {
       config.resize.method();
     },
     "optimize": function () {
-      var files = config.drop.element.files;
+      let files = config.drop.element.files;
       if (files && files.length) {
         config.console.element.textContent += "Starting optimization process, please wait..." + "\n" + "\n";
         window.setTimeout(function () {
-          var index = config.select.element.selectedIndex;
-          var name = config.select.element[index].value || "compressor";
-          for (var i = 0; i < files.length; i++) {
-            var file = files[i];
+          let index = config.select.element.selectedIndex;
+          let name = config.select.element[index].value || "compressor";
+          for (let i = 0; i < files.length; i++) {
+            let file = files[i];
             optimizer.engines[name](file);
           }
           /*  */
@@ -239,6 +283,6 @@ var config  = {
 config.port.connect();
 
 window.addEventListener("load", config.load, false);
+window.addEventListener("drop", config.action.drop, false);
 window.addEventListener("resize", config.resize.method, false);
-window.addEventListener("dragover", function (e) {e.preventDefault()});
-window.addEventListener("drop", function (e) {if (e.target.id !== "fileio") e.preventDefault()});
+window.addEventListener("dragover", config.action.dragover, false);

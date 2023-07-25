@@ -1,12 +1,14 @@
 {
-  "version": "0.1.2",
+  "version": "0.1.3",
   "manifest_version": 3,
   "name": "PNG Optimizer",
   "offline_enabled": true,
-  "short_name": "png-optimizer",
   "permissions": ["storage", "contextMenus"],
   "homepage_url": "https://mybrowseraddon.com/png-optimizer.html",
   "description": "Optimize PNG images and reduce the file size right in your browser!",
+  "commands": {
+    "_execute_action": {}
+  },
   "background": {
     "service_worker": "background.js"
   },

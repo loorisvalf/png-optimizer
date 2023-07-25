@@ -1,7 +1,7 @@
 This app uses the following open-source JavaScript libraries:
 
-1) vendor >> optipng >> optipng.js: https://github.com/LI-NA/optipng.js/blob/master/demo/js/optipng.js
-2) vendor >> pngcrush >> pngcrush.js: https://github.com/richardassar/pngcrush.js/blob/master/pngcrush.js
-3) vendor >> pngquant >> pngquant.js: https://github.com/psych0der/pngquantjs/blob/master/demo/js/pngquant.js
-4) vendor >> compressor >> compressor.js: https://github.com/fengyuanchen/compressorjs/blob/master/dist/compressor.js
-5) vendor >> browser-image-compression >> browser-image-compression.js: https://github.com/Donaldcwl/browser-image-compression/blob/master/dist/browser-image-compression.js
+1. vendor >> optipng >> optipng.js: https://github.com/LI-NA/optipng.js/blob/master/demo/js/optipng.js
+2. vendor >> pngcrush >> pngcrush.js: https://github.com/richardassar/pngcrush.js/blob/master/pngcrush.js
+3. vendor >> pngquant >> pngquant.js: https://github.com/psych0der/pngquantjs/blob/master/demo/js/pngquant.js
+4. vendor >> compressor >> compressor.js: https://github.com/fengyuanchen/compressorjs/blob/master/dist/compressor.js
+5. vendor >> browser-image-compression >> browser-image-compression.js: https://github.com/Donaldcwl/browser-image-compression/blob/master/dist/browser-image-compression.js

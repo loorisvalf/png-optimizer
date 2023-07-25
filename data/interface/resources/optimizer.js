@@ -1,16 +1,16 @@
 var optimizer = {
   "engines": {
     "compressor": function (file) {
-      var action = function (e) {
+      let action = function (e) {
         e.target.remove();
         /*  */
         new Compressor(file, {
           error (e) {},
           success (blob) {
             if (blob) {
-              var output = document.getElementById("png-optimizer-item-id-" + blob.name);
+              let output = document.getElementById("png-optimizer-item-id-" + blob.name);
               if (output) {
-                var size = parseInt(output.getAttribute("size"));
+                let size = parseInt(output.getAttribute("size"));
                 config.item.add.download.link(blob.name, blob);
                 config.item.add.text(blob.name, ".progress", "100% ✔", "#679008");
                 config.item.add.text(blob.name, ".final-size", config.size(blob.size));
@@ -24,7 +24,7 @@ var optimizer = {
         });
       };
       /*  */
-      var script = document.createElement("script");
+      let script = document.createElement("script");
       script.src = chrome.runtime.getURL("/data/interface/vendor/compressor/compressor.js");
       document.body.appendChild(script);
       script.onload = action;
@@ -36,14 +36,14 @@ var optimizer = {
       config.console.element.textContent += file.name + " >> " + "optimizing image..." + "\n";
     },
     "browser-image-compression": function (file) {
-      var action = function (e) {
+      let action = function (e) {
         e.target.remove();
         /*  */
-        var context = document.documentElement.getAttribute("context");
+        let context = document.documentElement.getAttribute("context");
         new imageCompression(file, {"useWebWorker": context === "webapp"}).then(function (blob) {
-          var output = document.getElementById("png-optimizer-item-id-" + blob.name);
+          let output = document.getElementById("png-optimizer-item-id-" + blob.name);
           if (output) {
-            var size = parseInt(output.getAttribute("size"));
+            let size = parseInt(output.getAttribute("size"));
             config.item.add.download.link(blob.name, blob);
             config.item.add.text(blob.name, ".progress", "100% ✔", "#679008");
             config.item.add.text(blob.name, ".final-size", config.size(blob.size));
@@ -55,7 +55,7 @@ var optimizer = {
         });
       };
       /*  */
-      var script = document.createElement("script");
+      let script = document.createElement("script");
       script.src = chrome.runtime.getURL("/data/interface/vendor/browser-image-compression/browser-image-compression.js");
       document.body.appendChild(script);
       script.onload = action;
@@ -73,28 +73,28 @@ var optimizer = {
       config.item.add.text(file.name, ".name", file.name);
       config.item.add.text(file.name, ".original-size", config.size(file.size));
       /*  */
-      var reader = new FileReader();
+      let reader = new FileReader();
       reader.name = file.name;
       reader.size = file.size;
       /*  */
       reader.readAsArrayBuffer(file);
       reader.addEventListener("load", async function (e) {
-        var worker = null;
-        var context = document.documentElement.getAttribute("context");
-        var url = chrome.runtime.getURL("/data/interface/vendor/pngcrush/worker.js");
+        let worker = null;
+        let context = document.documentElement.getAttribute("context");
+        let url = chrome.runtime.getURL("/data/interface/vendor/pngcrush/worker.js");
         /*  */
         if (context === "webapp") {
-          var response = await fetch(url);
-          var responsecode = await response.text();
-          var responseblob = new Blob([responsecode], {"type": "text/javascript"});
+          let response = await fetch(url);
+          let responsecode = await response.text();
+          let responseblob = new Blob([responsecode], {"type": "text/javascript"});
           /*  */
-          worker = new Worker(URL.createObjectURL(responseblob));        
+          worker = new Worker(URL.createObjectURL(responseblob));
           worker.postMessage({
             "type": "import", 
             "path": chrome.runtime.getURL("/data/interface/vendor/pngcrush/")
           });
         } else {
-          worker = new Worker(url);        
+          worker = new Worker(url);
           worker.postMessage({
             "path": '',
             "type": "import"
@@ -119,7 +119,7 @@ var optimizer = {
               }
             }
           } else if (e.data.type === "done") {
-            var blob = new Blob([e.data.data], {"type": "image/png"});
+            let blob = new Blob([e.data.data], {"type": "image/png"});
             /*  */
             config.item.add.download.link(this.name, blob);
             config.item.add.text(this.name, ".progress", "100% ✔", "#679008");
@@ -141,22 +141,22 @@ var optimizer = {
       config.item.add.text(file.name, ".name", file.name);
       config.item.add.text(file.name, ".original-size", config.size(file.size));
       /*  */
-      var reader = new FileReader();
+      let reader = new FileReader();
       reader.name = file.name;
       reader.size = file.size;
       /*  */
       reader.readAsArrayBuffer(file);
       reader.addEventListener("load", async function (e) {
-        var worker = null;
-        var context = document.documentElement.getAttribute("context");
-        var url = chrome.runtime.getURL("/data/interface/vendor/pngquant/worker.js");
+        let worker = null;
+        let context = document.documentElement.getAttribute("context");
+        let url = chrome.runtime.getURL("/data/interface/vendor/pngquant/worker.js");
         /*  */
         if (context === "webapp") {
-          var response = await fetch(url);
-          var responsecode = await response.text();
-          var responseblob = new Blob([responsecode], {"type": "text/javascript"});
+          let response = await fetch(url);
+          let responsecode = await response.text();
+          let responseblob = new Blob([responsecode], {"type": "text/javascript"});
           /*  */
-          worker = new Worker(URL.createObjectURL(responseblob));        
+          worker = new Worker(URL.createObjectURL(responseblob));
           worker.postMessage({
             "type": "import", 
             "path": chrome.runtime.getURL("/data/interface/vendor/pngquant/")
@@ -191,7 +191,7 @@ var optimizer = {
               }
             });
           } else if (e.data.type === "done") {
-            var blob = new Blob([e.data.data.data], {"type": "image/png"});
+            let blob = new Blob([e.data.data.data], {"type": "image/png"});
             /*  */
             config.item.add.download.link(this.name, blob);
             config.item.add.text(this.name, ".progress", "100% ✔", "#679008");
@@ -213,20 +213,20 @@ var optimizer = {
       config.item.add.text(file.name, ".name", file.name);
       config.item.add.text(file.name, ".original-size", config.size(file.size));
       /*  */
-      var reader = new FileReader();
+      let reader = new FileReader();
       reader.name = file.name;
       reader.size = file.size;
       /*  */
       reader.readAsArrayBuffer(file);
       reader.addEventListener("load", async function (e) {
-        var worker = null;
-        var context = document.documentElement.getAttribute("context");
-        var url = chrome.runtime.getURL("/data/interface/vendor/optipng/worker.js");
+        let worker = null;
+        let context = document.documentElement.getAttribute("context");
+        let url = chrome.runtime.getURL("/data/interface/vendor/optipng/worker.js");
         /*  */
         if (context === "webapp") {
-          var response = await fetch(url);
-          var responsecode = await response.text();
-          var responseblob = new Blob([responsecode], {"type": "text/javascript"});
+          let response = await fetch(url);
+          let responsecode = await response.text();
+          let responseblob = new Blob([responsecode], {"type": "text/javascript"});
           /*  */
           worker = new Worker(URL.createObjectURL(responseblob));        
           worker.postMessage({
@@ -263,7 +263,7 @@ var optimizer = {
               }
             });
           } else if (e.data.type === "done") {
-            var blob = new Blob([e.data.data.data], {"type": "image/png"});
+            let blob = new Blob([e.data.data.data], {"type": "image/png"});
             /*  */
             config.item.add.download.link(this.name, blob);
             config.item.add.text(this.name, ".progress", "100% ✔", "#679008");

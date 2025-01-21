@@ -157,8 +157,8 @@ var config  = {
             if (document.location.search === "?popup") config.port.name = "popup";
             /*  */
             if (config.port.name === "popup") {
-              document.body.style.width = "700px";
-              document.body.style.height = "500px";
+              document.body.style.width = "750px";
+              document.body.style.height = "550px";
             }
             /*  */
             chrome.runtime.connect({
@@ -175,9 +175,9 @@ var config  = {
     "add": {
       "text": function (name, key, text, color) {
         if (name && key && text) {
-          let output = document.getElementById("png-optimizer-item-id-" + name);
+          const output = document.getElementById("png-optimizer-item-id-" + name);
           if (output) {
-            let target = output.querySelector(key);
+            const target = output.querySelector(key);
             if (target) {
               target.textContent = text.trim();
               if (color) target.style.color = color;
@@ -192,8 +192,8 @@ var config  = {
       "template": function (name, size) {
         let output = document.getElementById("png-optimizer-item-id-" + name);
         if (!output) {
-          let template = document.querySelector("template");
-          let parent = template.content.querySelector(".output");
+          const template = document.querySelector("template");
+          const parent = template.content.querySelector(".output");
           output = document.importNode(parent, true);
           output.setAttribute("id", "png-optimizer-item-id-" + name);
           output.setAttribute("name", name);
@@ -203,10 +203,10 @@ var config  = {
       },
       "download": {
         "link": function (name, blob) {
-          let output = document.getElementById("png-optimizer-item-id-" + name);
+          const output = document.getElementById("png-optimizer-item-id-" + name);
           if (output) {
-            let a = document.createElement("a");
-            let download = output.querySelector(".download");
+            const a = document.createElement("a");
+            const download = output.querySelector(".download");
             /*  */
             a.href = window.URL.createObjectURL(blob);
             a.download = name;
@@ -220,8 +220,8 @@ var config  = {
   },
   "app": {
     "clean": function (d, r, c) {
-      let index = config.select.element.selectedIndex;
-      let title = config.select.element[index].textContent || "Compressor";
+      const index = config.select.element.selectedIndex;
+      const title = config.select.element[index].textContent || "Compressor";
       /*  */
       if (d) config.drop.element.value = '';
       if (r) config.result.element.textContent = '';
@@ -234,14 +234,14 @@ var config  = {
       config.resize.method();
     },
     "optimize": function () {
-      let files = config.drop.element.files;
+      const files = config.drop.element.files;
       if (files && files.length) {
         config.console.element.textContent += "Starting optimization process, please wait..." + "\n" + "\n";
         window.setTimeout(function () {
-          let index = config.select.element.selectedIndex;
-          let name = config.select.element[index].value || "compressor";
+          const index = config.select.element.selectedIndex;
+          const name = config.select.element[index].value || "compressor";
           for (let i = 0; i < files.length; i++) {
-            let file = files[i];
+            const file = files[i];
             optimizer.engines[name](file);
           }
           /*  */
